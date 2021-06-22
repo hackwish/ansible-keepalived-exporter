@@ -14,6 +14,10 @@
     group: root
     mode: "u=rw,go=r"
 
+- name: Verify keepalived_exporter exists
+  stat: path=/opt/keepalived_exporter/keepalived_exporter
+  register: keepalived_exporter_stat
+
 - name: untar tarball
   become: true
   become_user: root
@@ -21,10 +25,6 @@
     src: "/opt/keepalived_exporter/keepalived_exporter-{{ keepalived_exporter_version }}-{{ keepalived_exporter_platform_suffix }}.tar.gz"
     dest: "/opt/keepalived_exporter/"
     remote_src: true
-    owner: root
-    group: root
-    mode: "u=rwx,go=rx"
-    creates: "/opt/keepalived_exporter/keepalived_exporter"
 
 - name: Configure keepalived_exporter on system bin.
   file:
