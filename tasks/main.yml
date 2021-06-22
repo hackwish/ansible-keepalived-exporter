@@ -1,0 +1,76 @@
+---
+# tasks file for ansible-keepalived-exporter
+- name: Create keepalived_exporter directory
+  file: path=/opt/keepalived_exporter state=directory mode="a+rw"
+
+- name: download tarball
+  become: true
+  become_user: root
+  get_url:
+    url: "https://github.com/gen2brain/keepalived_exporter/releases/download/{{ keepalived_exporter_version }}/keepalived_exporter-{{ keepalived_exporter_version }}-{{ keepalived_exporter_platform_suffix }}.tar.gz"
+    checksum: "{{ keepalived_exporter_tarball_checksum }}"
+    dest: "/opt/keepalived_exporter/keepalived_exporter-{{ keepalived_exporter_version }}-{{ keepalived_exporter_platform_suffix }}.tar.gz"
+    owner: root
+    group: root
+    mode: "u=rw,go=r"
+
+- name: untar tarball
+  become: true
+  become_user: root
+  unarchive:
+    src: "/opt/keepalived_exporter/keepalived_exporter-{{ keepalived_exporter_version }}-{{ keepalived_exporter_platform_suffix }}.tar.gz"
+    dest: "/opt/keepalived_exporter/"
+    remote_src: true
+    owner: root
+    group: root
+    mode: "u=rwx,go=rx"
+    creates: "/opt/keepalived_exporter/keepalived_exporter"
+
+- name: Configure keepalived_exporter on system bin.
+  file:
+    src: "/opt/keepalived_exporter/keepalived_exporter"
+    dest: "/usr/bin/keepalived_exporter"
+    state: link
+  when: keepalived_exporter_stat.stat.exists
+
+- name: Configure keepalived_exporter on system sbin.
+  file:
+    src: "/opt/keepalived_exporter/keepalived_exporter"
+    dest: "/usr/sbin/keepalived_exporter"
+    state: link
+  when: keepalived_exporter_stat.stat.exists
+
+- command: keepalived_exporter -v
+  register: result_keepalived_exporter
+  failed_when: false
+  changed_when: false
+
+- debug:
+    var: result_keepalived_exporter.stdout
+
+- name: systemd service
+  become: true
+  template:
+    src: "keepalived_exporter.systemd.j2"
+    dest: "/lib/systemd/system/keepalived_exporter.service"
+    owner: root
+    group: root
+    mode: "u=rw,go=r"
+  notify:
+    - reload systemd daemon
+    - restart keepalived_exporter
+
+- name: Service Enabled
+  become: true
+  become_user: root
+  service:
+    name: keepalived_exporter
+    enabled: true
+
+- name: Service State
+  become: true
+  become_user: root
+  service:
+    name: keepalived_exporter
+    state: started
+  register: _keepalived_exporter_service_state

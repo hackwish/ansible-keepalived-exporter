@@ -1,0 +1,11 @@
+---
+# handlers file for ansible-keepalived-exporter
+- name: restart keepalived_exporter
+  become: true
+  become_user: root
+  service:
+    name: keepalived_exporter
+    state: "{{ (keepalived_exporter_service_state != 'stopped') | ternary('restarted', 'stopped') }}"
+  when: keepalived_exporter_service_notify and (
+    _keepalived_exporter_service_state is not defined or
+    not ( _keepalived_exporter_service_state is changed ))

@@ -1,0 +1,16 @@
+[Unit]
+Description=keepalived_exporter - Exporter for machine metrics.
+Documentation=https://github.com/gen2brain/keepalived_exporter
+After=network.target
+
+[Service]
+User=root
+Group=root
+EnvironmentFile={{ keepalived_exporter_config_file }}
+ExecStart={{ keepalived_exporter_program }} $OPTIONS
+
+SyslogIdentifier=keepalived_exporter
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
