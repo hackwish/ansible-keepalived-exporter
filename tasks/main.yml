@@ -10,9 +10,7 @@
     url: "https://github.com/gen2brain/keepalived_exporter/releases/download/{{ keepalived_exporter_version }}/keepalived_exporter-{{ keepalived_exporter_version }}-{{ keepalived_exporter_platform_suffix }}.tar.gz"
     checksum: "{{ keepalived_exporter_tarball_checksum }}"
     dest: "/opt/keepalived_exporter/keepalived_exporter-{{ keepalived_exporter_version }}-{{ keepalived_exporter_platform_suffix }}.tar.gz"
-    owner: root
-    group: root
-    mode: "u=rw,go=r"
+    mode: 0755
 
 - name: Verify keepalived_exporter exists
   stat: path=/opt/keepalived_exporter/keepalived_exporter
@@ -40,7 +38,7 @@
     state: link
   when: keepalived_exporter_stat.stat.exists
 
-- command: keepalived_exporter -v
+- command: keepalived_exporter -version
   register: result_keepalived_exporter
   failed_when: false
   changed_when: false
