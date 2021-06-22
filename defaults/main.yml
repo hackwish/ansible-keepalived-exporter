@@ -4,5 +4,5 @@ keepalived_exporter_version: "0.5.0"
 keepalived_exporter_tarball_checksum: "sha256:392efaccf479e3931b73dcdf5f17cf1e9907904f30b002a0ae26ac47c6d7f471"
 keepalived_exporter_platform_suffix: "amd64"
 
-keepalived_exporter_program: "/opt/keepalived_exporter/keepalived_exporter"
+# keepalived_exporter_program: "/opt/keepalived_exporter/keepalived_exporter"
 keepalived_exporter_config_file: /etc/default/keepalived_exporter

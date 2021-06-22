@@ -6,8 +6,7 @@ After=network.target
 [Service]
 User=root
 Group=root
-EnvironmentFile={{ keepalived_exporter_config_file }}
-ExecStart={{ keepalived_exporter_program }} $OPTIONS
+ExecStart={{ keepalived_exporter_program }}
 
 SyslogIdentifier=keepalived_exporter
 Restart=always
