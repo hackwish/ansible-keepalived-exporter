@@ -58,7 +58,7 @@
     mode: "u=rw,go=r"
   notify:
     - reload systemd daemon
-    - restart keepalived_exporter
+    # - restart keepalived_exporter
 
 - name: Service Enabled
   become: true
